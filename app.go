@@ -121,6 +121,19 @@ type SearchResponse struct {
 	Results []SearchResult `json:"results"`
 }
 
+type AddToCollectionResponse struct {
+	InstanceID  int    `json:"instance_id"`
+	ResourceURL string `json:"resource_url"`
+}
+
+type AddToWantlistResponse struct {
+	ID int `json:"id"`
+	Rating int `json:"rating"`
+	Notes string `json:"notes"`
+	ResourceURL string `json:"resource_url"`
+	BasicInformation BasicInfo `json:"basic_information"`
+}
+
 // Parameter Structures
 type SearchParams struct {
 	Query string `json:"query"`
@@ -187,7 +200,7 @@ func (a *App) GetCollectionValue() string {
 }
 
 func (a *App) GetCollection() []CollectionItem {
-	url := fmt.Sprintf("https://api.discogs.com/users/%s/collection/folders/0/releases?token=%s", a.username, a.apiKey)
+	url := fmt.Sprintf("https://api.discogs.com/users/%s/collection/folders/1/releases?token=%s", a.username, a.apiKey)
 
 
 	client := &http.Client{}
@@ -270,9 +283,6 @@ func (a *App) Search(params SearchParams) []SearchResult {
 		queryParams.Set("year", params.Year)
 	}
 
-	fmt.Println(queryParams)
-	fmt.Println(params.ReleaseTitle)
-
 	url := fmt.Sprintf("https://api.discogs.com/database/search?%s", queryParams.Encode())
 
 	fmt.Println(url)
@@ -303,4 +313,81 @@ func (a *App) Search(params SearchParams) []SearchResult {
 	}
 
 	return data.Results
+}
+
+func (a *App) AddToCollection(release_id int) (*AddToCollectionResponse, error) {
+	url := fmt.Sprintf("https://api.discogs.com/users/%s/collection/folders/1/releases/%d?token=%s", a.username, release_id, a.apiKey)
+
+	fmt.Println(url)
+
+
+	client := &http.Client{}
+	req, err := http.NewRequest("POST", url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create request: %w", err)
+	}	
+	req.Header.Set("User-Agent", "MyDashboardApp/1.0")
+
+	resp, err := client.Do(req)
+    if err != nil {
+        return nil, fmt.Errorf("failed to create request: %w", err)
+    }   
+    defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusCreated {
+		return nil, fmt.Errorf("discogs returned error status: %s", resp.Status)
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create request: %w", err)
+	}
+
+	var successData AddToCollectionResponse
+	err = json.Unmarshal(body, &successData)
+	if err != nil {
+		fmt.Println("Error: Unable to parse JSON data:", err)
+		return nil, fmt.Errorf("failed to create request: %w", err)
+	}
+
+	return &successData, nil
+}
+
+
+func (a *App) AddToWantlist(release_id int) (*AddToWantlistResponse, error) {
+	url := fmt.Sprintf("https://api.discogs.com/users/%s/wants/%d?token=%s", a.username, release_id, a.apiKey)
+
+	fmt.Println(url)
+
+
+	client := &http.Client{}
+	req, err := http.NewRequest("PUT", url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create request: %w", err)
+	}	
+	req.Header.Set("User-Agent", "MyDashboardApp/1.0")
+
+	resp, err := client.Do(req)
+    if err != nil {
+        return nil, fmt.Errorf("failed to create request: %w", err)
+    }   
+    defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusCreated {
+		return nil, fmt.Errorf("discogs returned error status: %s", resp.Status)
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create request: %w", err)
+	}
+
+	var successData AddToWantlistResponse
+	err = json.Unmarshal(body, &successData)
+	if err != nil {
+		fmt.Println("Error: Unable to parse JSON data:", err)
+		return nil, fmt.Errorf("failed to create request: %w", err)
+	}
+
+	return &successData, nil
 }

@@ -161,7 +161,6 @@
     margin-bottom: 32px;
 }
 
-/* Restructures search bar layout within container */
 .search-container {
     display: flex;
     align-items: center;
@@ -253,9 +252,70 @@
     border-color: #38bdf8;
 }
 
-/* Clean up input spinners styling quirks on fields */
 .filter-group input[type="number"]::-webkit-inner-spin-button,
 .filter-group input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
+}
+
+.add-btn {
+    margin-top: auto;
+    background-color: #334155;
+    color: #f8fafc;
+    border: 1px solid #475569;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.add-btn:hover {
+    background-color: #22c55e;
+    border-color: #22c55e;
+    color: #ffffff;
+}
+
+.success-toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background-color: #15803d;
+    border: 1px solid #22c55e; 
+    color: #ffffff;
+    padding: 14px 20px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    font-weight: 500;
+    font-size: 14px;
+    animation: slideIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.toast-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #22c55e;
+    color: #15803d;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }

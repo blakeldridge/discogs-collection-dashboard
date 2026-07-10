@@ -1,14 +1,17 @@
 import { useState, useEffect } from 'react';
 import './Browse.css';
 
-import { Search } from '../wailsjs/go/main/App';
+import { Search, AddToCollection, AddToWantlist } from '../wailsjs/go/main/App';
 
-const Browse = () => {
+const Browse = ({}) => {
 
     const [searchQuery, setSearchQuery] = useState("");
     const [results, setResults] = useState([])
     const [isLoading, setIsLoading] = useState(false);
     const [hasSearched, setHasSearched] = useState(false);
+
+    const [showAlert, setShowAlert] = useState(false);
+    const [wantAdded, setWantAdded] = useState(false);
 
     const [filters, setFilters] = useState({
         artist : "",
@@ -69,6 +72,39 @@ const Browse = () => {
             fetchSearchData();
         }
     };
+
+    const addToCollection = async (id) => {
+        try {
+            console.log(id);
+            const result = await AddToCollection(id);
+
+            setShowAlert(true);
+            setWantAdded(false);
+
+            setTimeout(() => {
+                setShowAlert(false);
+            }, 3000);
+        } catch(error) {
+            console.error("Failed to add to collection:", error);
+        }
+    };
+
+    const addToWantlist = async (id) => {
+        try {
+            console.log(id);
+            const result = await AddToWantlist(id);
+
+            setShowAlert(true);
+            setWantAdded(true);
+
+            setTimeout(() => {
+                setShowAlert(false);
+            }, 3000);
+        } catch(error) {
+            console.error("Failed to add to Wantlist:", error);
+        }
+    };
+
 
     return (
         <div>
@@ -163,12 +199,24 @@ const Browse = () => {
                                     <div>
                                         <h3>{item.title}</h3>
                                     </div>
+
+                                    <div>
+                                        <button onClick={() => addToCollection(item.id)}>+ Collection</button>
+                                        <button onClick={() => addToWantlist(item.id)}>+ Wantlist</button>
+                                    </div>
                                 </div>
                             );
                         })
                     ) : (
                         <div className="no-results">{hasSearched ? "No Results Found" : "Search for music to build your collection or wantlist"}</div>
                     )}
+                </div>
+            )}
+
+            {showAlert && (
+                <div className="success-toast">
+                    <span className="toast-icon">✓</span>
+                    <span className="toast-message">Added to {wantAdded ? "wantlist" : "collection"}!</span>
                 </div>
             )}
         </div>

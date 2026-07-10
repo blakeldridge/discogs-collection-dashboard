@@ -1,5 +1,19 @@
 export namespace main {
 	
+	export class AddToCollectionResponse {
+	    instance_id: number;
+	    resource_url: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new AddToCollectionResponse(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.instance_id = source["instance_id"];
+	        this.resource_url = source["resource_url"];
+	    }
+	}
 	export class ArtistItem {
 	    id: number;
 	    name: string;
@@ -110,6 +124,46 @@ export namespace main {
 		    return a;
 		}
 	}
+	export class AddToWantlistResponse {
+	    id: number;
+	    rating: number;
+	    notes: string;
+	    resource_url: string;
+	    basic_information: BasicInfo;
+	
+	    static createFrom(source: any = {}) {
+	        return new AddToWantlistResponse(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.id = source["id"];
+	        this.rating = source["rating"];
+	        this.notes = source["notes"];
+	        this.resource_url = source["resource_url"];
+	        this.basic_information = this.convertValues(source["basic_information"], BasicInfo);
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+	
+	
 	export class CollectionNote {
 	    field_id: number;
 	    value: string;
