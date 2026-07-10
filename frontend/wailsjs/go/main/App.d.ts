@@ -7,3 +7,5 @@ export function GetCollection():Promise<Array<main.CollectionItem>>;
 export function GetCollectionValue():Promise<string>;
 
 export function GetWantlist():Promise<Array<main.WantlistItem>>;
+
+export function Search(arg1:string):Promise<Array<main.SearchResult>>;

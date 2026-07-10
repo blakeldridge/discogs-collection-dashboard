@@ -85,6 +85,28 @@ type CollectionNote struct {
 	Value   string `json:"value"`
 }
 
+type SearchResult struct {
+	ID          int               `json:"id"`
+	Type        string            `json:"type"`
+	Title       string            `json:"title"`
+	Year        string            `json:"year"`
+	Country     string            `json:"country"`
+	Thumb       string            `json:"thumb"`
+	URI         string            `json:"uri"`
+	ResourceURL string            `json:"resource_url"`
+	Catno       string            `json:"catno"`
+	Genre       []string          `json:"genre"`
+	Style       []string          `json:"style"`
+	Format      []string          `json:"format"`
+	Label       []string          `json:"label"`
+	Community   CommunityStats    `json:"community"`
+}
+
+type CommunityStats struct {
+	Want int `json:"want"`
+	Have int `json:"have"`
+}
+
 // RESPONSES
 type CollectionResponse struct {
 	Releases []CollectionItem `json:"releases"`
@@ -92,6 +114,10 @@ type CollectionResponse struct {
 
 type WantlistResponse struct {
 	Wants []WantlistItem `json:"wants"`
+}
+
+type SearchResponse struct {
+	Results []SearchResult `json:"results"`
 }
 
 
@@ -212,4 +238,35 @@ func (a *App) GetWantlist() []WantlistItem {
 	}
 
 	return data.Wants
+}
+
+func (a *App) Search(query string) []SearchResult {
+	url := fmt.Sprintf("https://api.discogs.com/database/search?q=%s&token=%s", query, a.apiKey)
+
+	client := &http.Client{}
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return []SearchResult{}
+	}	
+	req.Header.Set("User-Agent", "MyDashboardApp/1.0")
+
+	resp, err := client.Do(req)
+    if err != nil {
+        return []SearchResult{}
+    }   
+    defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return []SearchResult{}
+	}
+
+	var data SearchResponse
+	err = json.Unmarshal(body, &data)
+	if err != nil {
+		fmt.Println("Error: Unable to parse JSON data:", err)
+		return []SearchResult{}
+	}
+
+	return data.Results
 }
