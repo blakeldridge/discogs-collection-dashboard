@@ -139,3 +139,123 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.no-results {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: #64748b;
+    font-size: 16px;
+    padding: 40px 0;
+}
+
+.browse-view {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.search-panel {
+    background-color: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 32px;
+}
+
+/* Restructures search bar layout within container */
+.search-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.search-input {
+    flex: 1;
+    background-color: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 15px;
+    color: #f8fafc;
+    outline: none;
+}
+
+.submit-btn {
+    background-color: #38bdf8;
+    color: #0f172a;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.submit-btn:hover {
+    background-color: #7dd3fc;
+}
+
+.reset-btn {
+    background-color: #334155;
+    color: #f8fafc;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.reset-btn:hover {
+    background-color: #475569;
+}
+
+/* Secondary Filters Matrix Layout */
+.filters-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    border-top: 1px solid #334155;
+    padding-top: 16px;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    text-align: left;
+}
+
+.filter-group label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.filter-group input,
+.filter-group select {
+    background-color: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 14px;
+    color: #f8fafc;
+    outline: none;
+    box-sizing: border-box;
+    width: 100%;
+    height: 40px;
+}
+
+.filter-group input:focus,
+.filter-group select:focus {
+    border-color: #38bdf8;
+}
+
+/* Clean up input spinners styling quirks on fields */
+.filter-group input[type="number"]::-webkit-inner-spin-button,
+.filter-group input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}

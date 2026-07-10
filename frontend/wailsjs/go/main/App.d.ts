@@ -8,4 +8,4 @@ export function GetCollectionValue():Promise<string>;
 
 export function GetWantlist():Promise<Array<main.WantlistItem>>;
 
-export function Search(arg1:string):Promise<Array<main.SearchResult>>;
+export function Search(arg1:main.SearchParams):Promise<Array<main.SearchResult>>;

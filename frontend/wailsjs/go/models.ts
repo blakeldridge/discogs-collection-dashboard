@@ -181,6 +181,26 @@ export namespace main {
 	}
 	
 	
+	export class SearchParams {
+	    query: string;
+	    artist: string;
+	    release_title: string;
+	    format: string;
+	    year: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new SearchParams(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.query = source["query"];
+	        this.artist = source["artist"];
+	        this.release_title = source["release_title"];
+	        this.format = source["format"];
+	        this.year = source["year"];
+	    }
+	}
 	export class SearchResult {
 	    id: number;
 	    type: string;

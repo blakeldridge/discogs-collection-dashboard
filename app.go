@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 
 	"encoding/json"
 
@@ -118,6 +119,15 @@ type WantlistResponse struct {
 
 type SearchResponse struct {
 	Results []SearchResult `json:"results"`
+}
+
+// Parameter Structures
+type SearchParams struct {
+	Query string `json:"query"`
+	Artist string `json:"artist"`
+	ReleaseTitle string `json:"release_title"`
+	Format string `json:"format"`
+	Year string `json:"year"`
 }
 
 
@@ -240,8 +250,32 @@ func (a *App) GetWantlist() []WantlistItem {
 	return data.Wants
 }
 
-func (a *App) Search(query string) []SearchResult {
-	url := fmt.Sprintf("https://api.discogs.com/database/search?q=%s&token=%s", query, a.apiKey)
+func (a *App) Search(params SearchParams) []SearchResult {
+	queryParams := url.Values{}
+	queryParams.Set("token", a.apiKey)
+
+	if params.Query != "" {
+		queryParams.Set("q", params.Query)
+	}
+	if params.Artist != "" {
+		queryParams.Set("artist", params.Artist)
+	}
+	if params.ReleaseTitle != "" {
+		queryParams.Set("release_title", params.ReleaseTitle)
+	}
+	if params.Format != "" {
+		queryParams.Set("format", params.Format)
+	}
+	if params.Year != "" {
+		queryParams.Set("year", params.Year)
+	}
+
+	fmt.Println(queryParams)
+	fmt.Println(params.ReleaseTitle)
+
+	url := fmt.Sprintf("https://api.discogs.com/database/search?%s", queryParams.Encode())
+
+	fmt.Println(url)
 
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", url, nil)
