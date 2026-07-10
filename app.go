@@ -35,6 +35,13 @@ type CollectionItem struct {
 	Notes            []CollectionNote `json:"notes"`
 }
 
+type WantlistItem struct {
+	Rating           int              `json:"rating"`
+	BasicInformation BasicInfo        `json:"basic_information"`
+	ID               int              `json:"id"`
+	ResourceURL       int             `json:"resrouce_url"`
+}
+
 type BasicInfo struct {
 	ID         int            `json:"id"`
 	Title      string         `json:"title"`
@@ -81,6 +88,10 @@ type CollectionNote struct {
 // RESPONSES
 type CollectionResponse struct {
 	Releases []CollectionItem `json:"releases"`
+}
+
+type WantlistResponse struct {
+	Wants []WantlistItem `json:"wants"`
 }
 
 
@@ -169,4 +180,36 @@ func (a *App) GetCollection() []CollectionItem {
 	}
 
 	return data.Releases
+}
+
+func (a *App) GetWantlist() []WantlistItem {
+	url := fmt.Sprintf("https://api.discogs.com/users/%s/wants?token=%s", a.username, a.apiKey)
+
+
+	client := &http.Client{}
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return []WantlistItem{}
+	}	
+	req.Header.Set("User-Agent", "MyDashboardApp/1.0")
+
+	resp, err := client.Do(req)
+    if err != nil {
+        return []WantlistItem{}
+    }   
+    defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return []WantlistItem{}
+	}
+
+	var data WantlistResponse
+	err = json.Unmarshal(body, &data)
+	if err != nil {
+		fmt.Println("Error: Unable to parse JSON data:", err)
+		return []WantlistItem{}
+	}
+
+	return data.Wants
 }

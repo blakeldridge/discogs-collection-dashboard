@@ -1,102 +1,95 @@
 import { useState, useEffect } from 'react';
 import './App.css';
-import { GetCollection, GetCollectionValue } from '../wailsjs/go/main/App';
+import { GetCollection, GetCollectionValue, GetWantlist } from '../wailsjs/go/main/App';
 
 function App() {
   const [collection, setCollection] = useState([]);
   const [collectionValue, setCollectionValue] = useState('Loading value...');
-  const [isLoading, setIsLoading] = useState(false);
 
-  // Helper function to pull fresh data from the Go backend
+  const [wantlist, setWantlist] = useState([]);
+
+  const [isLoading, setIsLoading] = useState(false);
+  
+  const [displaySelection, setDisplaySelection] = useState("collection");
+  const [section, setSection] = useState("collection");
+
   const fetchDashboardData = async () => {
     setIsLoading(true);
     try {
-      // Run both Go calls in parallel to speed things up
-      const [items, valueString] = await Promise.all([
-        GetCollection(),
-        GetCollectionValue()
-      ]);
-      
-      setCollection(items || []);
+      const [collectionItems, valueString, wantlistItems] = await Promise.all([GetCollection(), GetCollectionValue(), GetWantlist()]);
+      setCollection(collectionItems || []);
       setCollectionValue(valueString);
+      setWantlist(wantlistItems)
     } catch (error) {
-      console.error('Failed fetching data from Go backend:', error);
+      console.error(error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Fetch automatically on initial application load
-  useEffect(() => {
-    fetchDashboardData();
-  }, []);
+  useEffect(() => { fetchDashboardData(); }, []);
 
   return (
-    <div id="App" className="dashboard-container">
+    <div id="App">
       {/* TOOLBAR */}
-      <header className="dashboard-toolbar">
-        <div className="toolbar-left">
+      <header className="toolbar">
+        <div>
           <h1>Discogs Collection</h1>
-          <span className="collection-counter">
-            {collection.length} {collection.length === 1 ? 'Item' : 'Items'}
-          </span>
+          <span>{collection.length} Items</span>
         </div>
-        
-        <div className="toolbar-right">
-          <div className="value-badge" title="Estimated Value (Min | Med | Max)">
-            {collectionValue}
+
+        {/* Section Selector */}
+        <div className="section-tabs">
+          <div className={`section-tab ${section === "dashboard"? 'selected' : ''}`} onClick={() => setSection("dashboard")}>
+            <h3>Dashboard</h3>
           </div>
-          <button 
-            className={`refresh-btn ${isLoading ? 'spinning' : ''}`} 
-            onClick={fetchDashboardData}
-            disabled={isLoading}
-          >
-            {isLoading ? '🔄 Refreshing...' : '🔄 Refresh'}
-          </button>
+          <div className={`section-tab ${section === "collection"? 'selected' : ''}`} onClick={() => setSection("collection")}>
+            <h3>Collection</h3>
+          </div>
+          <div className={`section-tab ${section === "browse"? 'selected' : ''}`} onClick={() => setSection("browse")}>
+            <h3>Browse</h3>
+          </div>
+        </div>
+
+        <div>
+          <button onClick={fetchDashboardData}>Refresh</button>
         </div>
       </header>
 
-      {/* INFINITE SCROLLABLE GRID */}
-      <main className="dashboard-content">
-        {isLoading && collection.length === 0 ? (
-          <div className="loader-container">
-            <div className="spinner"></div>
-            <p>Syncing your vinyl collection...</p>
+
+      <main>
+        {/* COLLECTION vs WANTLIST Tabs */}
+        <div className="selection-tabs">
+          <div className={`selection-tab ${displaySelection === "collection"? 'selected' : ''}`} onClick={() => setDisplaySelection("collection")}>
+            <h3>Collection</h3>
           </div>
-        ) : collection.length === 0 ? (
-          <div className="empty-container">
-            <p>No items found in your collection folder.</p>
+          <div className={`selection-tab ${displaySelection === "wantlist"? 'selected' : ''}`} onClick={() => setDisplaySelection("wantlist")}>
+            <h3>Wantlist</h3>
           </div>
-        ) : (
-          <div className="album-grid">
-            {collection.map((item) => {
-              const info = item.basic_information;
-              const artistName = info.artists?.[0]?.name || 'Unknown Artist';
-              
-              return (
-                <div key={`${item.id}-${item.instance_id}`} className="album-card">
-                  <div className="cover-wrapper">
-                    <img 
-                      src={info.cover_image || info.thumb || 'https://via.placeholder.com/150?text=No+Cover'} 
-                      alt={info.title}
-                      loading="lazy" 
-                    />
-                    {info.year > 0 && <span className="year-tag">{info.year}</span>}
-                  </div>
-                  <div className="album-details">
-                    <h3 className="album-title" title={info.title}>{info.title}</h3>
-                    <p className="album-artist" title={artistName}>{artistName}</p>
-                    {info.labels?.[0] && (
-                      <p className="album-label" title={info.labels[0].name}>
-                        {info.labels[0].name} {info.labels[0].catno ? `(${info.labels[0].catno})` : ''}
-                      </p>
-                    )}
-                  </div>
+        </div>
+
+
+        {/* GRID */}
+        <div className="album-grid">
+          {(displaySelection === "collection"? collection : wantlist).map((item) => {
+            const info = item.basic_information || {};
+            return (
+              <div 
+                key={`${item.id}`} 
+                className="album-card"
+                style={{ cursor: 'pointer' }}
+              >
+                <div>
+                  <img src={info.cover_image || info.thumb} alt={info.title} />
                 </div>
-              );
-            })}
-          </div>
-        )}
+                <div>
+                  <h3>{info.title}</h3>
+                  <p>{info.artists?.[0]?.name}</p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </main>
     </div>
   );

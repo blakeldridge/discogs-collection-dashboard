@@ -5,3 +5,5 @@ import {main} from '../models';
 export function GetCollection():Promise<Array<main.CollectionItem>>;
 
 export function GetCollectionValue():Promise<string>;
+
+export function GetWantlist():Promise<Array<main.WantlistItem>>;

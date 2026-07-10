@@ -166,6 +166,43 @@ export namespace main {
 	}
 	
 	
+	
+	export class WantlistItem {
+	    rating: number;
+	    basic_information: BasicInfo;
+	    id: number;
+	    resrouce_url: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new WantlistItem(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.rating = source["rating"];
+	        this.basic_information = this.convertValues(source["basic_information"], BasicInfo);
+	        this.id = source["id"];
+	        this.resrouce_url = source["resrouce_url"];
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
 
 }
 

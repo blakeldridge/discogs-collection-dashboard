@@ -9,3 +9,7 @@ export function GetCollection() {
 export function GetCollectionValue() {
   return window['go']['main']['App']['GetCollectionValue']();
 }
+
+export function GetWantlist() {
+  return window['go']['main']['App']['GetWantlist']();
+}
