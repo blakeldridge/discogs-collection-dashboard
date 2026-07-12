@@ -168,35 +168,36 @@ func (a *App) startup(ctx context.Context) {
 
 // CUSTOM CALLS
 
-func (a *App) GetCollectionValue() string {
+func (a *App) GetCollectionValue() (CollectionValue, error) {
 	url := fmt.Sprintf("https://api.discogs.com/users/%s/collection/value?token=%s", a.username, a.apiKey)
-
 
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		return "Error : Unable to connect to API"
+		return CollectionValue{}, fmt.Errorf("unable to create request: %w", err)
 	}	
 	req.Header.Set("User-Agent", "MyDashboardApp/1.0")
 
 	resp, err := client.Do(req)
     if err != nil {
-        return "Error: Unable to connect to API"
+        return CollectionValue{}, fmt.Errorf("unable to create request: %w", err)
     }   
     defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return "Error : Unable to read response"
+		return CollectionValue{}, fmt.Errorf("unable to create request: %w", err)
 	}
 
 	var data CollectionValue
 	err = json.Unmarshal(body, &data)
 	if err != nil {
-		return "Error: Unable to parse JSON data"
+		return CollectionValue{}, fmt.Errorf("unable to create request: %w", err)
 	}
 
-	return fmt.Sprintf("Min: %s | Med: %s | Max: %s", data.Minimum, data.Median, data.Maximum)
+	fmt.Println(data)
+
+	return data, nil
 }
 
 func (a *App) GetCollection() []CollectionItem {

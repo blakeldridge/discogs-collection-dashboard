@@ -8,7 +8,7 @@ export function AddToWantlist(arg1:number):Promise<main.AddToWantlistResponse>;
 
 export function GetCollection():Promise<Array<main.CollectionItem>>;
 
-export function GetCollectionValue():Promise<string>;
+export function GetCollectionValue():Promise<main.CollectionValue>;
 
 export function GetWantlist():Promise<Array<main.WantlistItem>>;
 
