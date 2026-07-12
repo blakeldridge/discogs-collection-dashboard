@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import './Browse.css';
 
-import { Search, AddToCollection, AddToWantlist } from '../wailsjs/go/main/App';
+import { Search, AddToCollection, AddToWantlist } from '../../wailsjs/go/main/App';
 
 const Browse = ({}) => {
 

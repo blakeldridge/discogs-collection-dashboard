@@ -1,9 +1,12 @@
 import { useState } from 'react';
+import AlbumCard from '../components/AlbumCard';
 import './Collection.css';
 
 const Collection = ({collection, wantlist}) => {
 
     const [displaySelection, setDisplaySelection] = useState("collection");
+
+    const [albumSelected, setAlbumSelected] = useState(null);
 
 
     return (
@@ -28,6 +31,7 @@ const Collection = ({collection, wantlist}) => {
                     key={`${item.id}`} 
                     className="album-card"
                     style={{ cursor: 'pointer' }}
+                    onClick={() => setAlbumSelected(item)}
                 >
                     <div>
                     <img src={info.cover_image || info.thumb} alt={info.title} />
@@ -40,6 +44,10 @@ const Collection = ({collection, wantlist}) => {
                 );
             })}
             </div>
+
+            {albumSelected && (
+                <AlbumCard album={albumSelected} onClose={() => setAlbumSelected(null)} />
+            )}
         </div>
     );
 }

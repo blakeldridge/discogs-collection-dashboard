@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import './App.css';
 import { GetCollection, GetCollectionValue, GetWantlist } from '../wailsjs/go/main/App';
-import Collection from './Collection'
-import Browse from './Browse'
-import Dashboard from './Dashboard'
+import Collection from './pages/Collection'
+import Browse from './pages/Browse'
+import Dashboard from './pages/Dashboard'
 
 function App() {
   const [collection, setCollection] = useState([]);

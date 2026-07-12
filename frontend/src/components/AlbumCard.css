@@ -1,0 +1,225 @@
+/* Darkened full screen backdrop overlay */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.85); /* Darkens the app background */
+  backdrop-filter: blur(4px); /* Sleek modern blurred background edge */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* Keeps modal structural above layout toolbars */
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* Two-column responsive desktop layout blueprint */
+.album-detail-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  width: 90%;
+  max-width: 950px;
+  height: 80vh;
+  max-height: 600px;
+  display: grid;
+  grid-template-columns: 4.5fr 5.5fr; /* Left image weight vs text details */
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+/* Close Window Trigger button */
+.close-button {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.5rem;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 2.25rem;
+  cursor: pointer;
+  line-height: 1;
+  z-index: 10;
+  transition: color 0.2s;
+}
+
+.close-button:hover {
+  color: var(--text-primary);
+}
+
+/* Left Image Panel container block */
+.modal-left-panel {
+  background-color: #0d0d0f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  border-right: 1px solid var(--border-color);
+}
+
+.modal-cover-image {
+  width: 100%;
+  max-width: 400px;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+}
+
+/* Right Text Side Frame setup */
+.modal-right-panel {
+  display: flex;
+  flex-direction: column;
+  padding: 2.5rem;
+  overflow: hidden; /* Encapsulates internal lists scroll wrapper */
+}
+
+.modal-header {
+  margin-bottom: 1.5rem;
+  padding-right: 2rem; /* Avoid text overlapping closing cross icon */
+}
+
+.modal-album-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+  line-height: 1.2;
+}
+
+.modal-album-artist {
+  font-size: 1.2rem;
+  color: var(--accent-color); /* Matches your Modern Vinyl Blue variables */
+  margin: 0;
+  font-weight: 500;
+}
+
+/* Independent scroll area for longer tracklistings/notes fields */
+.modal-scroll-content {
+  overflow-y: auto;
+  flex-grow: 1;
+  padding-right: 0.5rem;
+}
+
+/* Custom Scrollbar Styling */
+.modal-scroll-content::-webkit-scrollbar {
+  width: 6px;
+}
+.modal-scroll-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+.modal-scroll-content::-webkit-scrollbar-thumb {
+  background-color: var(--border-color);
+  border-radius: 20px;
+}
+
+/* Metadata property breakdown items stack styles */
+.meta-info-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 1.5rem;
+}
+
+.meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.meta-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+}
+
+.meta-value {
+  font-size: 0.95rem;
+  color: var(--text-primary);
+}
+
+/* Colored category badges rows blocks styling */
+.tags-section {
+  margin-bottom: 1.25rem;
+}
+
+.section-subtitle {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.tags-container {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.tag {
+  font-size: 0.8rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+/* Distinct dynamic colors splitting Genres vs Styles badges */
+.tag-genre {
+  background-color: rgba(59, 130, 246, 0.15); /* Soft transparent blue */
+  color: #60a5fa;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.tag-style {
+  background-color: rgba(168, 85, 247, 0.15); /* Soft transparent purple */
+  color: #c084fc;
+  border: 1px solid rgba(168, 85, 247, 0.3);
+}
+
+/* Custom Notes Block quote box adjustments */
+.notes-section {
+  margin-top: 1.5rem;
+  background-color: var(--bg-primary);
+  padding: 1rem;
+  border-radius: 8px;
+  border-left: 3px solid #f59e0b; /* Amber accent accent line */
+}
+
+.collection-notes-text {
+  margin: 0;
+  font-size: 0.9rem;
+  font-style: italic;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+/* Smooth initialization animations scaling adjustments */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Mobile Breakpoint responsive grid collapse adjustments fallback */
+@media (max-width: 768px) {
+  .album-detail-card {
+    grid-template-columns: 1fr;
+    height: 95vh;
+    max-height: none;
+    overflow-y: auto;
+  }
+  .modal-left-panel {
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+    padding: 1.5rem;
+  }
+  .modal-right-panel {
+    padding: 1.5rem;
+    overflow: visible;
+  }
+}
